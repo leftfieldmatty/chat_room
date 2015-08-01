@@ -17,8 +17,7 @@ ClientCallbackImpl clientCB;
 	
 	public void messageCB(String message)
 	{
-		System.out.println("****CLIENT  THE MESSAGE RECEIVED BY THE CALLBACK IS ");
-		System.out.println(message);
+		System.out.println("****CLIENT  messageCB hit, incoming message is " + message);
 	}
 	
 	public void addUserCB(String userName)
@@ -34,22 +33,23 @@ ClientCallbackImpl clientCB;
 	
 	public void addRoomCB(String roomName)
 	{
-		
+		System.out.println("****CLIENT  addRoomCB hit, incoming roomName is " + roomName);
+
 	}
 	
 	public void removeRoomCB(String roomName)
 	{
-		
+		System.out.println("****CLIENT  removeRoomCB hit, incoming roomName is " + roomName);
 	}
 	
 	public void joinRoomCB(String userName, String roomName)
 	{
-		
+		System.out.println("****CLIENT  joinRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);
 	}
 	
 	public void leaveRoomCB(String userName, String roomName)
 	{
-		
+		System.out.println("****CLIENT  leaveRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);	
 	}
 	
 	

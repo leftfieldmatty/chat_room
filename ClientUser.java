@@ -38,7 +38,7 @@ implements ServerCallbackInterface{
 	   
 	public void doMessageCB(String incomingMsg) throws RemoteException
 	{
-		clientCallbackObj.messageCB("THIS IS A MESSAGE FROM THE SERVER, HAHAHAHA");
+		clientCallbackObj.messageCB(incomingMsg);
 	}
 
 	public void doAddUserCB(String userName) throws RemoteException

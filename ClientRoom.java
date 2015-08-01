@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -11,6 +12,7 @@ public class ClientRoom {
 	
 	public ClientRoom(String rName)
 	{
+		currentUsers = new ArrayList();
 		roomName = rName;
 	}
 	

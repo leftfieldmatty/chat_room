@@ -43,12 +43,16 @@ public class ClientInterface implements Runnable{
            
            if (ret == 1)
            {
-           clientChatroom.registerCBs(username, clientCB);  
+           clientChatroom.registerCBs(username, clientCB); 
+           clientChatroom.getInitialClientsAndRooms(username);
 
-           //clientChatroom.addUser("junk", "abcd");
-           //clientChatroom.removeUser("junk");
+           //int retval = clientChatroom.addUser("xanatos", "abcd");
+           //clientChatroom.userRoomJoin("chedister", "MATH 101");
+           //clientChatroom.userRoomLeave("chedister", "MATH 101");
            //clientChatroom.addRoom("MATH 101");
            //clientChatroom.removeRoom("MATH 101");
+           //clientChatroom.message("you got the right stuff", "MATH 101", "junk");
+           //clientChatroom.signOutUser("chedister");
            }
         }
         catch (Exception e)
