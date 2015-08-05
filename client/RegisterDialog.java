@@ -13,6 +13,7 @@ public class RegisterDialog extends JFrame {
     final static int maxGap = 100;
     JButton applyButton = new JButton("Register");
     JButton skipButton = new JButton("Back to Login");
+    JTextField hostField = new JTextField();
     JTextField userField = new JTextField();
     JPasswordField passField = new JPasswordField();
     GridLayout experimentLayout = new GridLayout(0,2);
@@ -46,6 +47,8 @@ public class RegisterDialog extends JFrame {
         //Add buttons to experiment with Grid Layout
         compsToExperiment.add(new JLabel(""));
         compsToExperiment.add(new JLabel(""));
+        compsToExperiment.add(new JLabel("Host IP Address"));
+        compsToExperiment.add(hostField);
         compsToExperiment.add(new JLabel("User Name"));
         compsToExperiment.add(userField);
         compsToExperiment.add(new JLabel("Password"));
@@ -60,7 +63,7 @@ public class RegisterDialog extends JFrame {
             public void actionPerformed(ActionEvent e){
                 //Process apply
             	//setVisible(true);
-            	clientIF.addNewUser(userField.getText(), new String(passField.getPassword()));
+            	clientIF.addNewUser(hostField.getText(),userField.getText(), new String(passField.getPassword()));
             }
         });
 

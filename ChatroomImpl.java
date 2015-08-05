@@ -151,31 +151,42 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//addUser
 	//takes in a username and password and saves it to the CurrentClients list
 	//also calls everyone's doAddUserCB function
-	public int addUser(String userName, String password) throws RemoteException
+	public int addUser(String userName, String password)
 	{   
-	   ClientUser newUser = new ClientUser(userName, password);
-	   userIterator = currentClients.iterator();
-	   while(userIterator.hasNext())
-	   {
-		   ClientUser cUser = (ClientUser)userIterator.next();
-		   if (cUser.getName().equals(userName))
+	   ClientUser newUser;
+	   try {
+			newUser = new ClientUser(userName, password);
+	
+		   userIterator = currentClients.iterator();
+		   while(userIterator.hasNext())
 		   {
-			   return -1;
+			   ClientUser cUser = (ClientUser)userIterator.next();
+			   if (cUser.getName().equals(userName))
+			   {
+				   return -1;
+			   }
 		   }
-	   }
-	   currentClients.add(newUser);
-	   writeUsersXML();
-	   
-	   userIterator = currentClients.iterator();
-	   while(userIterator.hasNext())
-	   {
-		   ClientUser cUser = (ClientUser)userIterator.next();
-		   if (cUser.getOnline())
+		   newUser.setOnline(true);
+		   currentClients.add(newUser);
+		   writeUsersXML();
+		   
+		   userIterator = currentClients.iterator();
+		   while(userIterator.hasNext())
 		   {
-			   cUser.doAddUserCB(cUser.getName());
+			   ClientUser cUser = (ClientUser)userIterator.next();
+			   if (cUser.getOnline())
+			   {
+				   cUser.doAddUserCB(cUser.getName());
+			   }
 		   }
-	   }
-	   return 1;
+		} 
+		catch (RemoteException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		printAll();
+		return 1;
 	}
 	
 	//addUser
@@ -295,7 +306,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//this function calls the messageCB for all clients in the room, except for the originating client
 	public void message(String incomingMsg, String roomName, String userName) throws RemoteException
 	{
-		System.out.println("****SERVER  inside message, incomingMsg is " + incomingMsg);
 		roomIterator = currentRooms.iterator();
 		while(roomIterator.hasNext())
 		{
@@ -314,14 +324,10 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 						userIterator = currentClients.iterator();
 						while(userIterator.hasNext())
 						{
-							ClientUser cUser = (ClientUser) userIterator.next();
-							
-							System.out.println("****SERVER  cUser.getName is " + cUser.getName() + " clientName is " + clientName + " userName is " + userName);
-						
+							ClientUser cUser = (ClientUser) userIterator.next();						
 							
 							if((cUser.getName().equals(clientName)) && !(cUser.getName().equals(userName)))
 							{
-								System.out.println("****SERVER  cUser.getName is " + cUser.getName() + " clientName is " + clientName + " userName is " + userName);
 								cUser.doMessageCB(incomingMsg);
 							}
 						}
@@ -336,6 +342,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//adds the user to the room's list, and calls all users' doJoinRoomCB functions
 	public void userRoomJoin(String userName, String roomName) throws RemoteException
 	{
+		System.out.println("****SERVER  insdie userRoomJoin, userName is " + userName + "roomName is " + roomName);
 		boolean userExists = false;
 		roomIterator = currentRooms.iterator();
 		userIterator = currentClients.iterator();
@@ -344,10 +351,12 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			ClientUser cUser = (ClientUser)userIterator.next();
 			if(cUser.getName().equals(userName))
 			{
+				
 				userExists = true;
 				break;
 			}
 		}
+		System.out.println("user exists is " + userExists);
 		if(userExists)
 		{
 			while(roomIterator.hasNext())
@@ -449,7 +458,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			  {
 				  cUser.setOnline(true);
 				  returnVal = 1;
-				  //addUser(userName, password);
 				  break;
 			  }
 			  else
@@ -459,6 +467,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			  }
 		  }
 		}
+		printAll();
 		return returnVal;
 	}
 	

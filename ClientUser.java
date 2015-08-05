@@ -43,29 +43,11 @@ implements ServerCallbackInterface{
 
 	public void doAddUserCB(String userName) throws RemoteException
 	{
-		System.out.println("****SERVER  inside doAddUserCB, about to send out " + userName);
-		if(clientCallbackObj == null)
-		{
-			System.out.println("clientCallbackObj is null");
-		}
-		else
-		{
-			System.out.println("clientCallbackObj is not null");
-		}
 		clientCallbackObj.addUserCB(userName);
 	}
 	
 	public void doRemoveUserCB(String userName) throws RemoteException
 	{
-		System.out.println("****SERVER  inside doRemoveUserCB, about to send out " + userName);
-		if(clientCallbackObj == null)
-		{
-			System.out.println("clientCallbackObj is null");
-		}
-		else
-		{
-			System.out.println("clientCallbackObj is not null");
-		}
 		clientCallbackObj.removeUserCB(userName);
 	}
 	

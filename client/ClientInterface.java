@@ -1,6 +1,7 @@
 package client;
 import iface.Chatroom;
 
+import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -15,20 +16,24 @@ public class ClientInterface implements Runnable{
 	Chatroom clientChatroom;
 	LoginDialog log_diag;
 	RegisterDialog reg_diag;
+	ChatListDialog list_diag;
+	String myName;
 	
 	
 	public void run() {
            try {
 			clientCB = new ClientCallbackImpl();
-			//clientGUI = new ChatroomGUI();
-			//clientGUI.connectIF(this);
 			ChatroomGUI clientGUI = new ChatroomGUI();
 			clientGUI.connectIF(this);
 			log_diag = new LoginDialog();
 			log_diag.registerInterface(this);
 			reg_diag = new RegisterDialog();
 			reg_diag.registerInterface(this);
+			list_diag = new ChatListDialog();
+			list_diag.registerInterface(this);
 			
+			clientCB.registerListDiag(list_diag);
+			//clientCB.registerChatDiag(chat_diag);
 			
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -38,7 +43,6 @@ public class ClientInterface implements Runnable{
 	
 	public void login(String hostname, String username, String password)
 	{
-		//CHEDITS:  may have to move the registry stuff around
 		try
         {
 		   Registry registry = LocateRegistry.getRegistry(hostname,4446);
@@ -50,14 +54,9 @@ public class ClientInterface implements Runnable{
            clientChatroom.registerCBs(username, clientCB); 
            clientChatroom.getInitialClientsAndRooms(username);
            log_diag.setVisible(false);
+           list_diag.setVisible(true);
+           myName = username;
 
-           //int retval = clientChatroom.addUser("xanatos", "abcd");
-           //clientChatroom.userRoomJoin("chedister", "MATH 101");
-           //clientChatroom.userRoomLeave("chedister", "MATH 101");
-           //clientChatroom.addRoom("MATH 101");
-           //clientChatroom.removeRoom("MATH 101");
-           //clientChatroom.message("you got the right stuff", "MATH 101", "junk");
-           //clientChatroom.signOutUser("chedister");
            }
            if(ret == 2)// bad password
            {
@@ -74,9 +73,13 @@ public class ClientInterface implements Runnable{
         } 
 	}
 	
-	public void addNewUser(String userName, String password)
+	public void addNewUser(String hostname, String userName, String password)
 	{
 		try {
+			Registry registry = LocateRegistry.getRegistry(hostname,4446);
+			clientChatroom = (Chatroom) registry.lookup( "ChatroomTest");
+		
+		
 			int ret = clientChatroom.addUser(userName, password);
 			if(ret == -1)
 			{
@@ -84,10 +87,10 @@ public class ClientInterface implements Runnable{
 			}
 			else
 			{
+				myName = userName;
 				//TODO:  call up list GUI
 			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			reg_diag.displayError(e);
 		}
 
@@ -115,9 +118,9 @@ public class ClientInterface implements Runnable{
 		clientChatroom.userRoomLeave(roomName, userName);
 	}
 	
-	void joinRoom(String roomName, String userName) throws RemoteException
+	void joinRoom(String roomName) throws RemoteException
 	{
-		clientChatroom.userRoomJoin(roomName, userName);
+		clientChatroom.userRoomJoin(myName, roomName);
 	}
 	
 	void createRoom(String roomName) throws RemoteException

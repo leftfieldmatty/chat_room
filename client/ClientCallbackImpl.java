@@ -9,10 +9,10 @@ import iface.ClientCallbackInterface;
 public class ClientCallbackImpl extends UnicastRemoteObject
 implements ClientCallbackInterface{
 ClientCallbackImpl clientCB;
+ChatListDialog chat_diag;
 	
 	public ClientCallbackImpl() throws RemoteException {
 	      super( );
-			//clientCB = new ClientCallbackImpl();
 	   }
 	
 	public void messageCB(String message)
@@ -28,13 +28,12 @@ ClientCallbackImpl clientCB;
 	public void removeUserCB(String userName)
 	{
 		System.out.println("****CLIENT  removeUserCB hit, incoming userName is " + userName);
-
 	}
 	
 	public void addRoomCB(String roomName)
 	{
 		System.out.println("****CLIENT  addRoomCB hit, incoming roomName is " + roomName);
-
+		chat_diag.addChat(roomName);
 	}
 	
 	public void removeRoomCB(String roomName)
@@ -52,5 +51,9 @@ ClientCallbackImpl clientCB;
 		System.out.println("****CLIENT  leaveRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);	
 	}
 	
+	public void registerListDiag(ChatListDialog incomingDiag)
+	{
+		chat_diag = incomingDiag;
+	}
 	
 }
