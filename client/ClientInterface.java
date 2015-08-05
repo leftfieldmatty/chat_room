@@ -13,6 +13,8 @@ public class ClientInterface implements Runnable{
 
 	ClientCallbackImpl clientCB;
 	Chatroom clientChatroom;
+	LoginDialog log_diag;
+	RegisterDialog reg_diag;
 	
 	
 	public void run() {
@@ -20,9 +22,13 @@ public class ClientInterface implements Runnable{
 			clientCB = new ClientCallbackImpl();
 			//clientGUI = new ChatroomGUI();
 			//clientGUI.connectIF(this);
-			ChatroomCMD clientCMD = new ChatroomCMD();
-			clientCMD.connectIF(this);
-			this.login("chedister", "1234");
+			ChatroomGUI clientGUI = new ChatroomGUI();
+			clientGUI.connectIF(this);
+			log_diag = new LoginDialog();
+			log_diag.registerInterface(this);
+			reg_diag = new RegisterDialog();
+			reg_diag.registerInterface(this);
+			
 			
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -30,21 +36,20 @@ public class ClientInterface implements Runnable{
            
 	}
 	
-	public void login(String username, String password)
+	public void login(String hostname, String username, String password)
 	{
 		//CHEDITS:  may have to move the registry stuff around
 		try
         {
-		   Registry registry = LocateRegistry.getRegistry("localhost",4446);
+		   Registry registry = LocateRegistry.getRegistry(hostname,4446);
            clientChatroom = (Chatroom) registry.lookup( "ChatroomTest");         //objectname in registry
-           System.out.println("****CLIENT  ClientInterface, calling registerCBs");
            int ret = clientChatroom.verifyUser(username, password);
-           System.out.println("****CLIENT  verification return is " + ret);
            
-           if (ret == 1)
+           if (ret == 1)// success
            {
            clientChatroom.registerCBs(username, clientCB); 
            clientChatroom.getInitialClientsAndRooms(username);
+           log_diag.setVisible(false);
 
            //int retval = clientChatroom.addUser("xanatos", "abcd");
            //clientChatroom.userRoomJoin("chedister", "MATH 101");
@@ -54,12 +59,50 @@ public class ClientInterface implements Runnable{
            //clientChatroom.message("you got the right stuff", "MATH 101", "junk");
            //clientChatroom.signOutUser("chedister");
            }
+           if(ret == 2)// bad password
+           {
+        	   log_diag.displayError("Password doesn't match");
+           }
+           if(ret == -1)// username not found
+           {
+        	   log_diag.displayError("Username not found");
+           }
         }
         catch (Exception e)
         {
-           System.out.println("****CLIENT  ClientInterface exception: " + e.getMessage());
-           e.printStackTrace();
+        	log_diag.displayError(e);
         } 
+	}
+	
+	public void addNewUser(String userName, String password)
+	{
+		try {
+			int ret = clientChatroom.addUser(userName, password);
+			if(ret == -1)
+			{
+				reg_diag.displayError("Username already exists");
+			}
+			else
+			{
+				//TODO:  call up list GUI
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			reg_diag.displayError(e);
+		}
+
+	}
+	
+	void showRegisterGUI()
+	{
+		log_diag.setVisible(false);
+		reg_diag.setVisible(true);
+	}
+	
+	void showLoginGUI()
+	{
+		reg_diag.setVisible(false);
+		log_diag.setVisible(true);
 	}
 	
 	void sendMessage(String message, String userName, String roomName) throws RemoteException
