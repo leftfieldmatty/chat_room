@@ -351,7 +351,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			ClientUser cUser = (ClientUser)userIterator.next();
 			if(cUser.getName().equals(userName))
 			{
-				
 				userExists = true;
 				break;
 			}
