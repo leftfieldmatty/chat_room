@@ -10,16 +10,21 @@ public class ClientCallbackImpl extends UnicastRemoteObject
 implements ClientCallbackInterface{
 ClientCallbackImpl clientCB;
 ChatListDialog chat_diag;
+ClientInterface parentIF;
 	
+	//Constructor
 	public ClientCallbackImpl() throws RemoteException {
 	      super( );
 	   }
 	
-	public void messageCB(String message)
+	//messageCB
+	//takes the incoming message and sends it to the appropriate chatroom GUI
+	public void messageCB(String message, String roomName)
 	{
 		System.out.println("****CLIENT  messageCB hit, incoming message is " + message);
+		parentIF.displayIncomingMsg(message, roomName);
 	}
-	
+
 	public void addUserCB(String userName)
 	{
 		System.out.println("****CLIENT  addUserCB hit, incoming userName is " + userName);
@@ -29,7 +34,9 @@ ChatListDialog chat_diag;
 	{
 		System.out.println("****CLIENT  removeUserCB hit, incoming userName is " + userName);
 	}
-	
+
+	//addRoomCB
+	//calls the addChat to the appropriate client interface
 	public void addRoomCB(String roomName)
 	{
 		System.out.println("****CLIENT  addRoomCB hit, incoming roomName is " + roomName);
@@ -41,19 +48,33 @@ ChatListDialog chat_diag;
 		System.out.println("****CLIENT  removeRoomCB hit, incoming roomName is " + roomName);
 	}
 	
+	//joinRoomCB
+	//passes the incoming user and room to the client interface for the GUIs
 	public void joinRoomCB(String userName, String roomName)
 	{
 		System.out.println("****CLIENT  joinRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);
+		parentIF.joinLocalRoom(roomName);
 	}
 	
+	//leaveRoomCB
+	//passes the leaving user and room to the client interface for the GUIs
 	public void leaveRoomCB(String userName, String roomName)
 	{
 		System.out.println("****CLIENT  leaveRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);	
 	}
 	
+	//registerListDiag
+	//registers the list of chatroom windows
 	public void registerListDiag(ChatListDialog incomingDiag)
 	{
 		chat_diag = incomingDiag;
+	}
+	
+	//registerParentIF
+	//registers the associated ClientInterface object
+	public void registerParentIF(ClientInterface incomingIF)
+	{
+		parentIF = incomingIF;
 	}
 	
 }

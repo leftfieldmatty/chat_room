@@ -7,6 +7,9 @@ import java.rmi.RemoteException;
 
 import javax.swing.*;
 
+//class ChatListDialog
+//This class is the dialog GUI that contains all available chatroom
+//that can be joined
 public class ChatListDialog extends JFrame{
     final static boolean shouldFill = true;
     final static boolean shouldWeightX = true;
@@ -15,11 +18,14 @@ public class ChatListDialog extends JFrame{
     static JList list;
     static DefaultListModel model;
 
-
+    //Constructor
+    //calls the GUI creation
     public ChatListDialog() {
     	 createAndShowGUI();
     }
     
+    //addComponentsToPane
+    //sets up the components of the GUI
     public static void addComponentsToPane(Container pane) {
         if (RIGHT_TO_LEFT) {
             pane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -116,11 +122,8 @@ public class ChatListDialog extends JFrame{
         });
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
+    //createAndShowGUI
+    //creates and shows the GUI
     private void createAndShowGUI() {
     	//Create and set up the window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -131,22 +134,30 @@ public class ChatListDialog extends JFrame{
         setVisible(false);
     }
     
+    //addChat
+    //adds a chatroom name to the list
     public void addChat(String roomName)
     {
         model.addElement(roomName);
 
     }
     
+    //removeChat
+    //removes a chatroom name from the list
     public void removeChat(String roomName)
     {
     	model.removeElementAt(model.indexOf(roomName));
     }
     
+    //makeVisible
+    //sets the visibility of the dialog to on or off
     public void makeVisible(boolean visible)
     {
     	setVisible(visible);
     }
     
+    //displayError
+    //Displays any incoming errors
     public void displayError(Exception e)
     {
     	JFrame frame = new JFrame("Error");
@@ -154,6 +165,8 @@ public class ChatListDialog extends JFrame{
     		    "Error with connection: " +e.getMessage());
     }
     
+    //displayError
+    //Displays any incoming errors
     public void displayError(String error)
     {
     	JFrame frame = new JFrame("Error");
@@ -161,6 +174,8 @@ public class ChatListDialog extends JFrame{
     		    error);
     }
 
+    //registerInterface
+    //saves off the associated ClientInterface class instance
 	public void registerInterface(ClientInterface incomingIF) 
 	{
 		clientIF = incomingIF;

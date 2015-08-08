@@ -1,1 +1,9 @@
-on client side, tie CBs to GUI, not worth it until we get the gui
+fix multiple users issues
+fully integrate chatroomdialog
+add functionality for logging off
+add functionality for leaving room
+add functionality for removing room
+reword design doc
+fix roomlist dialog(pham)
+figure out how to run this all without eclipse (pham)
+

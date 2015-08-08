@@ -5,7 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-
+//Class RegisterDialog
+//this class is a register GUI, where the user can register as a new user
 public class RegisterDialog extends JFrame {
 	
 	private static RegisterDialog instance_ =null;
@@ -19,6 +20,8 @@ public class RegisterDialog extends JFrame {
     GridLayout experimentLayout = new GridLayout(0,2);
     ClientInterface clientIF;
 
+    //Constructor
+    //sets up the GUI
 	RegisterDialog()	{
 		setSize(400,400);
 		setLocation(600,300);
@@ -26,11 +29,15 @@ public class RegisterDialog extends JFrame {
 		createAndShowGUI();
 	}
 	
+    //registerInterface
+    //registers the appropriate ClientInterface object
 	public void registerInterface(ClientInterface incomingIF)
 	{
 		clientIF = incomingIF;
 	}
 	
+	//addComponentsToPane
+	//sets up all the components of the GUI
 	public void addComponentsToPane(final Container pane) {
 
         final JPanel compsToExperiment = new JPanel();
@@ -82,11 +89,8 @@ public class RegisterDialog extends JFrame {
         //experimentLayout.setVgap(15);
     }
 	
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method is invoked from the
-     * event dispatch thread.
-     */
+    //createAndShowGUI
+    //calls the addComponentsToPane function and makes the GUI visible
     private void createAndShowGUI() {
         System.out.println("RegisterDialog.createAndShowGUI");
         //Create and set up the window.
@@ -98,11 +102,15 @@ public class RegisterDialog extends JFrame {
         setVisible(false);
     }
     
+    //makeVisible
+    //makes the GUI visible or invisible
     public void makeVisible(boolean visible)
     {
     	setVisible(visible);
     }
     
+    //displayError
+    //displays the incoming error with a popup
     public void displayError(Exception e)
     {
     	JFrame frame = new JFrame("Error");
@@ -110,6 +118,8 @@ public class RegisterDialog extends JFrame {
     		    "Error with connection: " +e.getMessage());
     }
     
+    //displayError
+    //displays the incoming error with a popup
     public void displayError(String error)
     {
     	JFrame frame = new JFrame("Error");

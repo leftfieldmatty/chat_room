@@ -18,19 +18,4 @@ public class clientMain {
 		interfaceThread.start();
 	}
 	
-	public void createInterface()
-	{
-		
-	}
-	
-	public void createGUI()
-	{
-		
-	}
-	
-	public void signUp(String userName, String password)
-	{
-		
-	}
-	
 }
