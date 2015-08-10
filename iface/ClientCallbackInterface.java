@@ -9,5 +9,6 @@ public interface ClientCallbackInterface extends java.rmi.Remote {
 	public void addRoomCB(String roomName) throws java.rmi.RemoteException;
 	public void removeRoomCB(String roomName) throws java.rmi.RemoteException;
 	public void joinRoomCB(String userName, String roomName) throws java.rmi.RemoteException;
+	public void userJoinRoomCB(String userName, String roomName) throws java.rmi.RemoteException;
 	public void leaveRoomCB(String userName, String roomName) throws java.rmi.RemoteException;
 }

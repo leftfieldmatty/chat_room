@@ -126,5 +126,14 @@ public class RegisterDialog extends JFrame {
     	JOptionPane.showMessageDialog(frame,
     		    error);
     }
+    
+    //clearFields
+    //empties all text fields
+    public void clearFields()
+    {
+    	hostField.setText("");
+    	userField.setText("");
+    	passField.setText("");
+    }
 	
 }

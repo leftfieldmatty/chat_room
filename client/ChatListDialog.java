@@ -3,6 +3,8 @@ package client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
 import javax.swing.*;
@@ -22,6 +24,7 @@ public class ChatListDialog extends JFrame{
     //calls the GUI creation
     public ChatListDialog() {
     	 createAndShowGUI();
+
     }
     
     //addComponentsToPane
@@ -62,6 +65,13 @@ public class ChatListDialog extends JFrame{
 		c.gridx = 2;
 		c.gridy = 0;
 		pane.add(joinButton, c);
+		
+		logoutButton = new JButton("Logout");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 3;
+		c.gridy = 0;
+		pane.add(logoutButton,c);
 	
 		// fill data with chatrooms
 
@@ -75,18 +85,7 @@ public class ChatListDialog extends JFrame{
 		c.gridx = 0;
 		c.gridy = 1;
 		pane.add(list, c);
-			
-		/*joinButton = new JButton("Join");
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.ipady = 0;       //reset to default
-		c.weighty = 1.0;   //request any extra vertical space
-		c.anchor = GridBagConstraints.PAGE_END; //bottom of space
-		c.insets = new Insets(10,0,0,0);  //top padding
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 2;   //2 columns wide
-		c.gridy = 2;       //third row
-		pane.add(joinButton, c);
-		*/
+		
         // Process join button
         joinButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -101,11 +100,11 @@ public class ChatListDialog extends JFrame{
         });
 
         // Process logout button
-        /*logoutButton.addActionListener(new ActionListener(){
+        logoutButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-
+            	int retval = clientIF.logoff();
             }
-        });*/
+        });
 
         // Process create button
         createButton.addActionListener(new ActionListener(){
@@ -121,7 +120,8 @@ public class ChatListDialog extends JFrame{
             }
         });
     }
-
+    
+    
     //createAndShowGUI
     //creates and shows the GUI
     private void createAndShowGUI() {
@@ -130,6 +130,7 @@ public class ChatListDialog extends JFrame{
         //Set up the content pane.
         addComponentsToPane(getContentPane());
         //Display the window.
+        setPreferredSize(new Dimension(400,200));
         pack();
         setVisible(false);
     }
@@ -139,7 +140,6 @@ public class ChatListDialog extends JFrame{
     public void addChat(String roomName)
     {
         model.addElement(roomName);
-
     }
     
     //removeChat
@@ -154,6 +154,13 @@ public class ChatListDialog extends JFrame{
     public void makeVisible(boolean visible)
     {
     	setVisible(visible);
+    }
+    
+    //removeAllRooms
+    //removes all the rooms from the list
+    public void removeAllRooms()
+    {
+    	model.removeAllElements();
     }
     
     //displayError

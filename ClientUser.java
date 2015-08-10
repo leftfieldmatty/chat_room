@@ -82,6 +82,13 @@ implements ServerCallbackInterface{
 		clientCallbackObj.joinRoomCB(userName, roomName);
 	}
 	
+	//doUserJoinRoomCB
+	//calls the user join room callback to the appropriate client
+	public void doUserJoinRoomCB(String userName, String roomName) throws RemoteException
+	{
+		clientCallbackObj.userJoinRoomCB(userName, roomName);
+	}
+	
 	//doLeaveRoomCB
 	//calls the leave room callback to the appropriate client
 	public void doLeaveRoomCB(String userName, String roomName) throws RemoteException

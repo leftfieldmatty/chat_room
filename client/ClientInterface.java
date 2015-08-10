@@ -60,17 +60,16 @@ public class ClientInterface implements Runnable{
         {
 		   Registry registry = LocateRegistry.getRegistry(hostname,4446);
            serverChatroom = (Chatroom) registry.lookup( "ChatroomTest");
-           System.out.println("serverChatroom created");
            
            int ret = serverChatroom.verifyUser(username, password);
            System.out.println("return value of verifyuser is " + ret);
            if (ret == 1)// success
            {
            serverChatroom.registerCBs(username, clientCB);
-           System.out.println("after register CBs");
            serverChatroom.getInitialClientsAndRooms(username);
            log_diag.setVisible(false);
            list_diag.setVisible(true);
+           log_diag.clearFields();
            myName = username;
            list_diag.setTitle("ChatList - " + myName);
 
@@ -99,17 +98,22 @@ public class ClientInterface implements Runnable{
 		try {
 			Registry registry = LocateRegistry.getRegistry(hostname,4446);
 			serverChatroom = (Chatroom) registry.lookup( "ChatroomTest");
-		
-		
+			
 			int ret = serverChatroom.addUser(userName, password);
+
+			if(ret == 1)
+			{
+	           serverChatroom.registerCBs(userName, clientCB);
+	           serverChatroom.getInitialClientsAndRooms(userName);
+	           reg_diag.setVisible(false);
+	           list_diag.setVisible(true);
+	           reg_diag.clearFields();
+			   myName = userName;
+			   list_diag.setTitle("ChatList - " + myName);
+			}
 			if(ret == -1)
 			{
 				reg_diag.displayError("Username already exists");
-			}
-			else
-			{
-				myName = userName;
-				//TODO:  call up list GUI
 			}
 		} catch (Exception e) {
 			reg_diag.displayError(e);
@@ -143,7 +147,7 @@ public class ClientInterface implements Runnable{
 	//calls the RMI's userRoomLeave function with a room and user
 	void leaveRoom(String roomName, String userName) throws RemoteException
 	{
-		serverChatroom.userRoomLeave(roomName, userName);
+		serverChatroom.userRoomLeave(userName, roomName);
 	}
 	
 	//joinRoom
@@ -167,6 +171,13 @@ public class ClientInterface implements Runnable{
 	    serverChatroom.removeRoom(roomName);	
 	}
 	
+	//joinUserLocalRoom
+	//adds a user to a chatroom
+	void joinUserLocalRoom(String userName, String roomName)
+	{
+		
+	}
+	
 	//joinLocalRoom
 	//creates a new chatroom GUI for the room being joined
 	void joinLocalRoom(String roomName)
@@ -187,12 +198,18 @@ public class ClientInterface implements Runnable{
 			ChatRoomDialog tempRoom = new ChatRoomDialog(roomName, myName);
 			tempRoom.registerInterface(this);
 			currentRooms.add(tempRoom);
+			try {
+				serverChatroom.requestRoomUsers(myName, roomName);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	//leaveLocalRoom
 	//destroys the chatroom GUI
-	void leaveLocalRoom(String roomName)
+	void leaveLocalRoom(String userName, String roomName)
 	{
 		roomIterator = currentRooms.iterator();
 		while(roomIterator.hasNext())
@@ -206,7 +223,24 @@ public class ClientInterface implements Runnable{
 			    break;
 		    }
 	    }
-		
+	}
+	
+	//logoff
+	//logs the user off and exits the program
+	int logoff()
+	{
+		try {
+			serverChatroom.signOutUser(myName);
+			list_diag.removeAllRooms();
+			list_diag.setVisible(false);
+			log_diag.setVisible(true);
+			serverChatroom = null;
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+		return 1;
 	}
 	
 	//displayIncomingMsg

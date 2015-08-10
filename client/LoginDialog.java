@@ -30,7 +30,6 @@ public class LoginDialog extends JFrame {
 		setLocation(600,300);
         setResizable(false);
         createAndShowGUI();
-        
     }
 	
     //registerInterface
@@ -129,4 +128,14 @@ public class LoginDialog extends JFrame {
     	JOptionPane.showMessageDialog(frame,
     		    error);
     }
+    
+    //clearFields
+    //empties all text fields
+    public void clearFields()
+    {
+    	hostField.setText("");
+    	userField.setText("");
+    	passField.setText("");
+    }
+    
 }

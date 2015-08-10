@@ -160,6 +160,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 		   userIterator = currentClients.iterator();
 		   while(userIterator.hasNext())
 		   {
+			   
 			   ClientUser cUser = (ClientUser)userIterator.next();
 			   if (cUser.getName().equals(userName))
 			   {
@@ -169,16 +170,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 		   newUser.setOnline(true);
 		   currentClients.add(newUser);
 		   writeUsersXML();
-		   
-		   userIterator = currentClients.iterator();
-		   while(userIterator.hasNext())
-		   {
-			   ClientUser cUser = (ClientUser)userIterator.next();
-			   if (cUser.getOnline())
-			   {
-				   cUser.doAddUserCB(cUser.getName());
-			   }
-		   }
 		} 
 		catch (RemoteException e) 
 		{
@@ -519,40 +510,55 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			}
 			if(cUser != null)
 			{
-				userIterator = currentClients.iterator();
-				while(userIterator.hasNext())
-				{
-					ClientUser tempUser = (ClientUser) userIterator.next();
-					if(tempUser.getOnline())
-					{
-							cUser.doAddUserCB(tempUser.getName());
-					}
-				}
 				roomIterator = currentRooms.iterator();
 				while(roomIterator.hasNext())
 				{
 					ClientRoom cRoom = (ClientRoom) roomIterator.next();
 					cUser.doAddRoomCB(cRoom.getName());
-					
-					List roomClients = cRoom.getUsers();
-					if(roomClients != null)
-					{
-						Iterator userIterator2 = roomClients.iterator();
-						while(userIterator2.hasNext())
-						{
-							String tempUser2 = (String)userIterator2.next();
-							if(cUser.getOnline())
-							{
-							    cUser.doJoinRoomCB(tempUser2,cRoom.getName());
-							}
-						}
-					}
 				}
 			}
 		}
 		catch (RemoteException e) 
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	//requestRoomUsers
+	//gets all users in a classroom and broadcasts that info out
+	public void requestRoomUsers(String userName, String roomName)
+	{
+		ClientUser cUser = null;
+		userIterator = currentClients.iterator();
+		while(userIterator.hasNext())
+		{
+		  cUser = (ClientUser) userIterator.next();
+		  if(cUser.getName().equals(userName))
+		  { 
+			  break;
+		  }
+		}
+		if(cUser != null)
+		{
+			roomIterator = currentRooms.iterator();
+			while(roomIterator.hasNext())
+			{
+				ClientRoom tempRoom = (ClientRoom)roomIterator.next();
+				if(tempRoom.getName().equals(roomName))
+				{
+					userIterator = tempRoom.getUsers().iterator();
+					while(userIterator.hasNext())
+					{
+						try {
+							cUser.doUserJoinRoomCB((String)userIterator.next(),tempRoom.getName());
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+						
+				}
+			}
 		}
 	}
 	

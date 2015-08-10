@@ -60,7 +60,16 @@ ClientInterface parentIF;
 	//passes the leaving user and room to the client interface for the GUIs
 	public void leaveRoomCB(String userName, String roomName)
 	{
-		System.out.println("****CLIENT  leaveRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);	
+		System.out.println("****CLIENT  leaveRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);
+		parentIF.leaveLocalRoom(userName, roomName);
+	}
+	
+	//userJoinRoomCB
+	//adds the username to the room, passes it to the GUI
+	public void userJoinRoomCB(String userName, String roomName)
+	{
+		System.out.println("****CLIENT  userJoinRoomCB hit, incoming userName is " + userName + " and roomName is " + roomName);
+		parentIF.joinUserLocalRoom(userName, roomName);
 	}
 	
 	//registerListDiag
@@ -76,5 +85,7 @@ ClientInterface parentIF;
 	{
 		parentIF = incomingIF;
 	}
+
+
 	
 }

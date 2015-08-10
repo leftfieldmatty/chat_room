@@ -9,8 +9,8 @@ import java.util.List;
 public class clientMain {
 
 	String userName;
-	List<String> availRooms = new ArrayList<String>();
-	List<String> currentRooms = new ArrayList<String>();
+	//List<String> availRooms = new ArrayList<String>();
+	//List<String> currentRooms = new ArrayList<String>();
 	
 	public static void main(String[] args) 
 	{
