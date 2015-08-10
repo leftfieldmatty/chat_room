@@ -175,7 +175,18 @@ public class ClientInterface implements Runnable{
 	//adds a user to a chatroom
 	void joinUserLocalRoom(String userName, String roomName)
 	{
-		
+		System.out.println("****CLIENT  inside joinUserLocalRoom, userName is " + userName + " and roomName is" + roomName);
+		roomIterator = currentRooms.iterator();
+		while(roomIterator.hasNext())
+		{
+			ChatRoomDialog tempRoom = (ChatRoomDialog)roomIterator.next();
+			System.out.println("temproom name is " + tempRoom.getName());
+			if(tempRoom.getName().equals(roomName))
+			{
+				System.out.println("adding " + userName + " to " + tempRoom.getName());
+				tempRoom.addUser(userName);
+			}
+		}
 	}
 	
 	//joinLocalRoom
@@ -211,16 +222,24 @@ public class ClientInterface implements Runnable{
 	//destroys the chatroom GUI
 	void leaveLocalRoom(String userName, String roomName)
 	{
+		System.out.println("****CLIENT  inside leaveLocalRoom, userName is " + userName + " and romName is " + roomName);
 		roomIterator = currentRooms.iterator();
 		while(roomIterator.hasNext())
 	    {
 		    ChatRoomDialog room = (ChatRoomDialog)roomIterator.next();
 		    if (room.getName().equals(roomName))
 		    {
-		    	room.setVisible(false);
-		    	roomIterator.remove();
-			    room = null;
-			    break;
+		    	if(myName.equals(userName))
+		    	{
+		    		room.setVisible(false);
+		    		roomIterator.remove();
+		    		room = null;
+		    		break;
+		    	}
+		    	else
+		    	{
+		    		room.removeUser(userName);
+		    	}
 		    }
 	    }
 	}

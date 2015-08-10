@@ -370,6 +370,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 						if(cUser.getOnline())
 						{
 							cUser.doJoinRoomCB(userName, roomName);
+							cUser.doUserJoinRoomCB(userName, roomName);
 						}
 					}
 				}
@@ -528,6 +529,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//gets all users in a classroom and broadcasts that info out
 	public void requestRoomUsers(String userName, String roomName)
 	{
+		System.out.println("****SERVER  inside requestRoomUsers");
 		ClientUser cUser = null;
 		userIterator = currentClients.iterator();
 		while(userIterator.hasNext())

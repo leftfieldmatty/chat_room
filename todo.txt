@@ -1,5 +1,4 @@
-fully integrate chatroomdialog
-add functionality for leaving room
 add user list to main gui (pham)
 figure out how to run this all without eclipse (pham)
+fix bug where if i leave one room, both rooms get kicked out
 

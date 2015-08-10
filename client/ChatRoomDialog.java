@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -25,7 +27,8 @@ public class ChatRoomDialog extends JFrame
     private String roomName;
     private String myName;
     static ClientInterface clientIF;
-    private List users;
+    private ArrayList users;
+    private Iterator userIterator;
     static JList userList;
     static DefaultListModel userModel;
     
@@ -42,6 +45,8 @@ public class ChatRoomDialog extends JFrame
         roomName = incomingName;
         myName = incomingUserName;
         initComponents();
+        
+        users = new ArrayList();
         
         entryBg = entry.getBackground();
         entry.getDocument().addDocumentListener(this);
@@ -187,6 +192,31 @@ public class ChatRoomDialog extends JFrame
     void message(String msg) {
         status.setText(msg);
     }
+    
+    public void addUser(String userName)
+    {
+    	boolean alreadyPresent = false;
+    	userIterator = users.iterator();
+    	while(userIterator.hasNext())
+    	{
+    		String user = (String)userIterator.next();
+    		if(user.equals(userName))
+    		{
+    			alreadyPresent = true;
+    		}
+    	}
+    	if(!alreadyPresent)
+    	{
+    		users.add(userName);
+    		userModel.addElement(userName);
+    	}
+    }
+    
+    public void removeUser(String userName)
+	{
+    	userModel.removeElementAt(userModel.indexOf(userName));
+    	users.remove(users.indexOf(userName));
+	}
 
     // DocumentListener methods
     

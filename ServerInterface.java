@@ -8,8 +8,6 @@ public class ServerInterface implements Runnable{
 		try 
 		{
 			ChatroomImpl serverImpl = new ChatroomImpl();
-			//ServerCallbackImpl serverCBImpl = new ServerCallbackImpl();
-			//serverImpl.connectCB(serverCBImpl);
 		} 
 		catch (RemoteException e) 
 		{
