@@ -24,7 +24,14 @@ This project was run through the Eclipse IDE on Linux.
     b. Username: any
     c. Password: any
    And hit Register. This should automatically log you in and bring you to the ChatRoomList dialog.
-   (If you would like to retest the login, please log out and try to log back in through the Login dialog.
+   (If you would like to retest the login, please log out and try to log back in through the Login dialog.)
+** If you are having a problem with connection in steps 4 or 5 please take the following steps:
+	1. In a terminal, type sudo vi /etc/hosts and enter your password
+	2. Modify the addresses for BOTH 'localhost' AND your computer name to match the IP address of the wireless network
+		a. To find the IP address, type 'ifconfig' in a terminal and take note of the inet address beside 
+		   'wlan1' or something similar.
+	3. Now restart rmiregistry, server, and client applications and 'localhost' should now work.
+
 6. On the ChatRoomList dialog, you have two options: Create or Join a chatroom. To Join, skip to step 9.
 7. To Create a chatroom, click the Create button.
 8. In the pop-up window, enter a new chatroom name, and hit OK.
