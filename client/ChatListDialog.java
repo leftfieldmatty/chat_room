@@ -3,7 +3,9 @@ package client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
@@ -24,7 +26,6 @@ public class ChatListDialog extends JFrame{
     //calls the GUI creation
     public ChatListDialog() {
     	 createAndShowGUI();
-
     }
     
     //addComponentsToPane
@@ -49,42 +50,73 @@ public class ChatListDialog extends JFrame{
 		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.PAGE_END;
 		pane.add(label, c);
 		
 		createButton = new JButton("Create");
 	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 1;
+	    c.weightx = 1.0;
+	    c.gridx = 0;
 	    c.gridy = 0;
+		c.anchor = GridBagConstraints.PAGE_START;
 	    pane.add(createButton, c);
 		
 		joinButton = new JButton("Join");
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 2;
+		c.weightx = 1.0;
+		c.gridx = 1;
 		c.gridy = 0;
+		c.anchor = GridBagConstraints.PAGE_START;
 		pane.add(joinButton, c);
 		
 		logoutButton = new JButton("Logout");
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 3;
+		c.weightx = 1.0;
+		c.gridx = 2;
 		c.gridy = 0;
+		c.anchor = GridBagConstraints.PAGE_START;
 		pane.add(logoutButton,c);
 	
 		// fill data with chatrooms
 
 		model = new DefaultListModel();
 		list = new JList(model);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		MouseListener mouseListener = new MouseAdapter() {
+		    public void mouseClicked(MouseEvent mouseEvent) {
+		        list = (JList) mouseEvent.getSource();
+	            if (mouseEvent.getClickCount() == 2) {
+	                int index = list.locationToIndex(mouseEvent.getPoint());
+	                if (index >= 0) {
+	                    Object o = list.getModel().getElementAt(index);
+	                    System.out.println("Double-clicked on: " + o.toString());
+	                	try {
+	    					clientIF.joinRoom(model.getElementAt(list.getSelectedIndex()).toString());
+	    				} catch (RemoteException e1) {
+	    					// TODO Auto-generated catch block
+	    					e1.printStackTrace();
+	    				}
+	                }
+	            }
+		    }
+		};
+		list.addMouseListener(mouseListener);
+		JScrollPane jScrollPane2 = new JScrollPane();
+		jScrollPane2.setViewportView(list);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.ipady = 40;      //make this component tall
+		c.ipady = 300;      //make this component tall
 		c.weightx = 0.0;
 		c.gridwidth = 3;
 		c.gridx = 0;
-		c.gridy = 1;
-		pane.add(list, c);
+		c.gridy = 2;
+		pane.add(jScrollPane2, c);
+		// scrolls to bottom of list	
+		int lastIndex = list.getModel().getSize() - 1;
+		if (lastIndex >= 0) {
+			list.ensureIndexIsVisible(lastIndex);
+		}
 		
         // Process join button
         joinButton.addActionListener(new ActionListener(){
@@ -130,9 +162,11 @@ public class ChatListDialog extends JFrame{
         //Set up the content pane.
         addComponentsToPane(getContentPane());
         //Display the window.
-        setPreferredSize(new Dimension(400,200));
+        setPreferredSize(new Dimension(300, 420));
         pack();
         setVisible(false);
+		//setMinimumSize(getSize());
+
     }
     
     //addChat
