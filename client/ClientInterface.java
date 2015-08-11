@@ -30,8 +30,6 @@ public class ClientInterface implements Runnable{
 	public void run() {
            try {
 			clientCB = new ClientCallbackImpl();
-			//ChatroomGUI clientGUI = new ChatroomGUI();
-			//clientGUI.connectIF(this);
 			log_diag = new LoginDialog();
 			log_diag.registerInterface(this);
 			reg_diag = new RegisterDialog();
@@ -174,15 +172,12 @@ public class ClientInterface implements Runnable{
 	//adds a user to a chatroom
 	void joinUserLocalRoom(String userName, String roomName)
 	{
-		System.out.println("****CLIENT  inside joinUserLocalRoom, my name is " + myName + " userName is " + userName + " and roomName is" + roomName);
 		roomIterator = currentRooms.iterator();
 		while(roomIterator.hasNext())
 		{
 			ChatRoomDialog tempRoom = (ChatRoomDialog)roomIterator.next();
-			System.out.println("temproom name is " + tempRoom.getName());
 			if(tempRoom.getName().equals(roomName))
 			{
-				System.out.println("adding " + userName + " to " + tempRoom.getName());
 				tempRoom.addUser(userName);
 			}
 		}
@@ -194,7 +189,6 @@ public class ClientInterface implements Runnable{
 	{
 		if(userName.equals(myName))
 		{
-			System.out.println("****CLIENT  inside joinLocalRoom, and myname matches username, which is " + myName);
 			roomIterator = currentRooms.iterator();
 			boolean alreadyInRoom = false;
 			while(roomIterator.hasNext())
@@ -208,14 +202,12 @@ public class ClientInterface implements Runnable{
 			
 			if(!alreadyInRoom)
 			{
-				System.out.println("****CLIENT creating chatroom, myName is " + myName + " roomName is " + roomName);
 				ChatRoomDialog tempRoom = new ChatRoomDialog(roomName, myName);
 				tempRoom.registerInterface(this);
 				currentRooms.add(tempRoom);
 				try {
 					serverChatroom.requestRoomUsers(myName, roomName);
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -258,7 +250,6 @@ public class ClientInterface implements Runnable{
 			log_diag.setVisible(true);
 			serverChatroom = null;
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
 		}
@@ -269,15 +260,12 @@ public class ClientInterface implements Runnable{
 	//passes the incoming message to the appropriate GUI
 	void displayIncomingMsg(String msg, String rName)
 	{
-		System.out.println("****CLIENT  displayIncomingMsg, nyName is " + myName + " msg is " + msg + " roomName is " + rName);
 		roomIterator = currentRooms.iterator();
 		while(roomIterator.hasNext())
 	    {
 		    ChatRoomDialog room = (ChatRoomDialog)roomIterator.next();
-		    System.out.println("room name is " + room.getName());
 		    if (room.getName().equals(rName))
 		    {
-		    	System.out.println("sending message to the room");
 		    	room.displayIncomingMsg(msg);
 			    break;
 		    }

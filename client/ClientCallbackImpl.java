@@ -61,6 +61,7 @@ ClientInterface parentIF;
 	//adds the username to the room, passes it to the GUI
 	public void userJoinRoomCB(String userName, String roomName)
 	{
+		System.out.println("****CLIENT inside userJoinRoomCB, userName is " + userName + " roomName is " + roomName);
 		parentIF.joinUserLocalRoom(userName, roomName);
 	}
 	

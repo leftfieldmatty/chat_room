@@ -24,7 +24,6 @@ public class ChatRoomDialog extends JFrame
     private JButton sendButton;
     private JButton leaveButton;
     private JLabel status;
-//    private JTextArea textArea;
     private String roomName;
     private String myName;
     private ClientInterface clientIF;
@@ -77,7 +76,6 @@ public class ChatRoomDialog extends JFrame
         JLabel label;
 
     	entry = new JTextField();
-//		textArea = new JTextArea();
         status = new JLabel();
         sendButton = new JButton("Send");
         leaveButton = new JButton("Leave Room");
@@ -102,14 +100,7 @@ public class ChatRoomDialog extends JFrame
     		//natural height, maximum width
 	    	c.fill = GridBagConstraints.HORIZONTAL;
 		}
-        
-/*        textArea.setColumns(20);
-        textArea.setLineWrap(true);
-        textArea.setRows(5);
-        textArea.setWrapStyleWord(true);
-        textArea.setEditable(false);
-        jScrollPane1 = new JScrollPane(textArea);
-*/
+
 		// Messages Label
     	label = new JLabel("Messages:");
     	if (shouldWeightX) {
@@ -167,9 +158,7 @@ public class ChatRoomDialog extends JFrame
     	// Entry Textbox
     	c.fill = GridBagConstraints.HORIZONTAL;
     	c.ipady = 0;       //reset to default
-    	//c.weighty = 1.0;   //request any extra vertical space
     	c.anchor = GridBagConstraints.PAGE_END; //bottom of space
-    	//c.insets = new Insets(10,0,0,0);  //top padding
     	c.gridx = 0;       //aligned with button 2
     	c.gridwidth = 2;   //2 columns wide
     	c.gridy = 2;       //third row
@@ -178,11 +167,8 @@ public class ChatRoomDialog extends JFrame
     	// Send Button
         c.fill = GridBagConstraints.HORIZONTAL;
     	c.ipady = 0;       //reset to default
-    	//c.weighty = 1.0;   //request any extra vertical space
     	c.anchor = GridBagConstraints.PAGE_END; //bottom of space
-    	//c.insets = new Insets(10,0,0,0);  //top padding
     	c.gridx = 2;       //aligned with button 2
-//    	c.gridwidth = 1;   //2 columns wide
     	c.gridy = 2;       //third row
     	pane.add(sendButton, c);
 
@@ -215,12 +201,9 @@ public class ChatRoomDialog extends JFrame
         
         /* Send message to server */
         try {
-        	//textArea.append(myName + " - " + s + "\n");
-        	System.out.println("****CLIENT  inside send, myName is " + myName + " roomName is "+ roomName + "message is " + s);
         	chatlogModel.addElement(myName + " - " + s + "\n");
 			clientIF.sendMessage(myName + " - " + s + "\n", roomName);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         message("Message sent to server");
@@ -235,10 +218,9 @@ public class ChatRoomDialog extends JFrame
     public void leaveRoom()
     {
     	try {
-    		System.out.println("****CLIENT  leaving room, roomName is " + roomName + " my name is " + myName);
 			clientIF.leaveRoom(roomName, myName);
+			chatlogModel.addElement(myName + " has left the room.");
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -247,8 +229,6 @@ public class ChatRoomDialog extends JFrame
     //take the incoming message, and puts it in the main text area
     void displayIncomingMsg(String incomingMsg)
     {
-    	//textArea.append(incomingMsg);
-    	System.out.println("****CLIENT  hit displayIncomingMsg, myName is " + myName + " and roomName is " + roomName);
     	chatlogModel.addElement(incomingMsg);
     }
     
@@ -267,14 +247,34 @@ public class ChatRoomDialog extends JFrame
     	if(!alreadyPresent)
     	{
     		users.add(userName);
-    		userModel.addElement(userName);
+    		chatlogModel.addElement(userName + " joines the chatroom.");
     	}
+    	
+    	userModel.clear();
+    	userIterator = users.iterator();
+    	while(userIterator.hasNext())
+    	{
+    		userModel.addElement((String)userIterator.next());
+    	}
+    	
     }
     
     public void removeUser(String userName)
 	{
-    	userModel.removeElementAt(userModel.indexOf(userName));
-    	users.remove(users.indexOf(userName));
+    	if(userModel.indexOf(userName) != -1)
+    	{
+    		userModel.removeElementAt(userModel.indexOf(userName));
+    		userIterator = users.iterator();
+    		while(userIterator.hasNext())
+        	{
+        		String user = (String)userIterator.next();
+        		if(user.equals(userName))
+        		{
+        			userIterator.remove();
+        			chatlogModel.addElement(userName + " has left the chatroom.");
+        		}
+        	}    		
+    	}
 	}
         
     //message
@@ -286,11 +286,9 @@ public class ChatRoomDialog extends JFrame
     // DocumentListener methods
     
     public void insertUpdate(DocumentEvent ev) {
-        //search();
     }
     
     public void removeUpdate(DocumentEvent ev) {
-        //search();
     }
     
     public void changedUpdate(DocumentEvent ev) {

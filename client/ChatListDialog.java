@@ -112,7 +112,6 @@ public class ChatListDialog extends JFrame{
 	                	try {
 	    					clientIF.joinRoom(model.getElementAt(list.getSelectedIndex()).toString());
 	    				} catch (RemoteException e1) {
-	    					// TODO Auto-generated catch block
 	    					e1.printStackTrace();
 	    				}
 	                }
@@ -143,7 +142,6 @@ public class ChatListDialog extends JFrame{
             	try {
 					clientIF.joinRoom(model.getElementAt(list.getSelectedIndex()).toString());
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
             }
@@ -164,7 +162,6 @@ public class ChatListDialog extends JFrame{
             	try {
 					clientIF.createRoom(name);
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
             }

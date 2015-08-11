@@ -297,7 +297,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//this function calls the messageCB for all clients in the room, except for the originating client
 	public void message(String incomingMsg, String roomName, String userName) throws RemoteException
 	{
-		System.out.println("****SERVER  inside message, incomingMsg is " + incomingMsg + " roomName is " + roomName + " userName is " + userName);
 		roomIterator = currentRooms.iterator(); 
 		while(roomIterator.hasNext())
 		{
@@ -305,7 +304,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			if (cRoom.getName().equals(roomName))
 			{
 				List roomClients = cRoom.getUsers();
-				System.out.println(roomClients);
 				if(roomClients != null)
 				{
 					Iterator clientIterator = roomClients.iterator();
@@ -319,12 +317,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 							
 							if((cUser.getName().equals(clientName)) && !(cUser.getName().equals(userName)))
 							{
-								System.out.println("****SERVER  sending doMessageCB with msg to " + incomingMsg + " to user " + cUser.getName() + " to room " + cRoom.getName());
 								cUser.doMessageCB(incomingMsg, cRoom.getName());
-							}
-							else
-							{
-								System.out.println("Not sending message to " + cUser.getName());
 							}
 						}
 					}
@@ -338,7 +331,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//adds the user to the room's list, and calls all users' doJoinRoomCB functions
 	public void userRoomJoin(String userName, String roomName) throws RemoteException
 	{
-		System.out.println("****SERVER  insdie userRoomJoin, userName is " + userName + "roomName is " + roomName);
 		boolean userExists = false;
 		roomIterator = currentRooms.iterator();
 		userIterator = currentClients.iterator();
@@ -359,10 +351,10 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 				if (cRoom.getName().equals(roomName))
 				{
 					cRoom.addUser(userName);
-					userIterator = currentClients.iterator();
-					while(userIterator.hasNext())
+					Iterator freshIterator = currentClients.iterator();
+					while(freshIterator.hasNext())
 					{
-						ClientUser cUser = (ClientUser) userIterator.next();
+						ClientUser cUser = (ClientUser) freshIterator.next();
 						if(cUser.getOnline())
 						{
 							cUser.doJoinRoomCB(userName, roomName);
@@ -549,7 +541,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 						try {
 							cUser.doUserJoinRoomCB((String)userIterator.next(),tempRoom.getName());
 						} catch (RemoteException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -705,7 +696,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 			ClientRoom cRoom = (ClientRoom)roomIterator.next();
 			System.out.println("NAME is " + cRoom.getName());
 			List roomClients = cRoom.getUsers();
-			//System.out.println(roomClients);
 			if(roomClients != null)
 			{
 				Iterator subIterator = roomClients.iterator();
