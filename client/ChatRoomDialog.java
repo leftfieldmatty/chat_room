@@ -27,13 +27,13 @@ public class ChatRoomDialog extends JFrame
 //    private JTextArea textArea;
     private String roomName;
     private String myName;
-    static ClientInterface clientIF;
+    private ClientInterface clientIF;
     private ArrayList users;
     private Iterator userIterator;
-    static JList userList; // users
-    static DefaultListModel userModel;
-    static JList chatlogList; // chat_log
-    static DefaultListModel chatlogModel;
+    private JList userList; // users
+    private DefaultListModel userModel;
+    private JList chatlogList; // chat_log
+    private DefaultListModel chatlogModel;
   
     final static Color  ERROR_COLOR = Color.PINK;
     final static String CANCEL_ACTION = "cancel-search";
@@ -47,6 +47,10 @@ public class ChatRoomDialog extends JFrame
         roomName = incomingName;
         myName = incomingUserName;
         initComponents();
+    	// Done after all adds
+        setPreferredSize(new Dimension(400,400));
+		pack();
+		setVisible(true);
         
         users = new ArrayList();
 
@@ -64,6 +68,10 @@ public class ChatRoomDialog extends JFrame
     private void initComponents() {
     	Container pane = getContentPane();
 
+        if (RIGHT_TO_LEFT) {
+            pane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        }
+        
     	JButton button;
         JTextField textfield;
         JLabel label;
@@ -78,9 +86,11 @@ public class ChatRoomDialog extends JFrame
     	chatlogModel = new DefaultListModel();
     	chatlogList = new JList(chatlogModel);
 
+    	// Exit window cleanly same as leave room button
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
         	public void windowClosing(WindowEvent ev) {
+        		leaveRoom();        		
         		dispose();
         	}
         });
@@ -176,9 +186,6 @@ public class ChatRoomDialog extends JFrame
     	c.gridy = 2;       //third row
     	pane.add(sendButton, c);
 
-        setPreferredSize(new Dimension(400,400));
-		pack();
-		setVisible(true);
 		
         // Process apply button
         sendButton.addActionListener(new ActionListener(){

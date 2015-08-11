@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
@@ -18,25 +19,42 @@ public class ChatListDialog extends JFrame{
     final static boolean shouldFill = true;
     final static boolean shouldWeightX = true;
     final static boolean RIGHT_TO_LEFT = false;
-    static ClientInterface clientIF;
-    static JList list;
-    static DefaultListModel model;
+    private ClientInterface clientIF;
+    private JList list;
+    private DefaultListModel model;
 
     //Constructor
     //calls the GUI creation
     public ChatListDialog() {
-    	 createAndShowGUI();
+        initComponents();
+ 		// done after all adds
+        setPreferredSize(new Dimension(300, 420));
+        pack();
+        setVisible(false);
     }
     
-    //addComponentsToPane
+    //initComponents
     //sets up the components of the GUI
-    public static void addComponentsToPane(Container pane) {
+    private void initComponents() {
+    	Container pane = getContentPane();
+
         if (RIGHT_TO_LEFT) {
             pane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         }
 
         JLabel label;
         JButton logoutButton, joinButton, createButton;
+        
+        // Exit window cleanly same as logoff button
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+        	public void windowClosing(WindowEvent ev) {
+        		clientIF.logoff();
+        		dispose();
+        	}
+        });
+        
+        
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		if (shouldFill) {
@@ -117,7 +135,7 @@ public class ChatListDialog extends JFrame{
 		if (lastIndex >= 0) {
 			list.ensureIndexIsVisible(lastIndex);
 		}
-		
+
         // Process join button
         joinButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -152,23 +170,7 @@ public class ChatListDialog extends JFrame{
             }
         });
     }
-    
-    
-    //createAndShowGUI
-    //creates and shows the GUI
-    private void createAndShowGUI() {
-    	//Create and set up the window.
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //Set up the content pane.
-        addComponentsToPane(getContentPane());
-        //Display the window.
-        setPreferredSize(new Dimension(300, 420));
-        pack();
-        setVisible(false);
-		//setMinimumSize(getSize());
-
-    }
-    
+        
     //addChat
     //adds a chatroom name to the list
     public void addChat(String roomName)
