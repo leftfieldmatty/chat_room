@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -17,14 +19,19 @@ public class ChatRoomDialog extends JFrame
     
     private JTextField entry;
     private JLabel jLabel1;
-    private JButton jButton1;
+    private JButton sendButton;
+    private JButton leaveButton;
     private JScrollPane jScrollPane1;
     private JLabel status;
     private JTextArea textArea;
     private String roomName;
     private String myName;
     static ClientInterface clientIF;
-    private List users;
+    private ArrayList users;
+    private Iterator userIterator;
+    static JList userList;
+    static DefaultListModel userModel;
+    
     
     final static Color  ERROR_COLOR = Color.PINK;
     final static String CANCEL_ACTION = "cancel-search";
@@ -38,6 +45,8 @@ public class ChatRoomDialog extends JFrame
         roomName = incomingName;
         myName = incomingUserName;
         initComponents();
+        
+        users = new ArrayList();
         
         entryBg = entry.getBackground();
         entry.getDocument().addDocumentListener(this);
@@ -55,7 +64,10 @@ public class ChatRoomDialog extends JFrame
         textArea = new JTextArea();
         status = new JLabel();
         jLabel1 = new JLabel();
-        jButton1 = new JButton("Send");
+        sendButton = new JButton("Send");
+        leaveButton = new JButton("Leave Room");
+		userModel = new DefaultListModel();
+		userList = new JList(userModel);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -74,106 +86,61 @@ public class ChatRoomDialog extends JFrame
 
         jLabel1.setText("Enter text to send:");
 
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        getContentPane().setLayout(new GridBagLayout());
         
-		//Create a parallel group for the horizontal axis
-		ParallelGroup hGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        GridBagConstraints c = new GridBagConstraints();
+        
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        getContentPane().add(entry, c);
+        
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 0;
+        getContentPane().add(sendButton,c);
 		
-		//Create a sequential and a parallel groups
-		SequentialGroup h1 = layout.createSequentialGroup();
-		ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-		
-		//Add a container gap to the sequential group h1
-		h1.addContainerGap();
-		
-		//Add a scroll pane and a label to the parallel group h2
-		h2.addComponent(jScrollPane1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE);
-		h2.addComponent(status, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE);
-		
-		//Create a sequential group h3
-		SequentialGroup h3 = layout.createSequentialGroup();
-	//	h3.addComponent(jLabel1);
-	//	h3.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED);
-		h3.addComponent(entry, GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE);
-		h3.addGap(5);
-		h3.addComponent(jButton1);
-		//h3.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED);
-		//h3.addComponent(jButton1);
-		
-		//Add the group h3 to the group h2
-		h2.addGroup(h3);
-		//Add the group h2 to the group h1
-		h1.addGroup(h2);
-	
-		h1.addContainerGap();
-		
-		//Add the group h1 to the hGroup
-		hGroup.addGroup(GroupLayout.Alignment.TRAILING, h1);
-		//Create the horizontal group
-		layout.setHorizontalGroup(hGroup);
-		
-	        
-		//Create a parallel group for the vertical axis
-		ParallelGroup vGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-		//Create a sequential group v1
-		SequentialGroup v1 = layout.createSequentialGroup();
-		//Add a container gap to the sequential group v1
-		v1.addContainerGap();
-		//Create a parallel group v2
-		ParallelGroup v2 = layout.createParallelGroup(GroupLayout.Alignment.BASELINE);
-	//	v2.addComponent(jLabel1);
-		v2.addComponent(jButton1);
-		v2.addComponent(entry, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-		//Add the group v2 to the group v1
-		v1.addGroup(v2);
-		v1.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
-		v1.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE);
-		v1.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
-		v1.addComponent(status);
-		v1.addContainerGap();
-		
-		//Add the group v1 to the group vGroup
-		vGroup.addGroup(v1);
-		//Create the vertical group
-		layout.setVerticalGroup(vGroup);
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 2;
+        c.gridy = 0;
+        getContentPane().add(leaveButton, c);
+        
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 100;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        getContentPane().add(textArea,c );
+        
+        c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 100;
+        c.gridx = 2;
+        c.gridy = 1;
+        getContentPane().add(userList, c);
+        
+        setPreferredSize(new Dimension(400,400));
 		pack();
 		setVisible(true);
 		
         // Process apply button
-        jButton1.addActionListener(new ActionListener(){
+        sendButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	send();
             }
         });
+        
+        leaveButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		leaveRoom();
+        	}
+        });
     }
 
-/*
-    public void search() {
-        
-        String s = entry.getText();
-        if (s.length() <= 0) {
-            message("Nothing to search");
-            return;
-        }
-        
-        String content = textArea.getText();
-        int index = content.indexOf(s, 0);
-        if (index >= 0) {   // match found
-            try {
-                int end = index + s.length();
-                textArea.setCaretPosition(end);
-                entry.setBackground(entryBg);
-                message("'" + s + "' found. Press ESC to end search");
-            } catch (BadLocationException e) {
-                e.printStackTrace();
-            }
-        } else {
-            entry.setBackground(ERROR_COLOR);
-            message("'" + s + "' not found. Press ESC to start a new search");
-        }
-    }
-*/
     //send
     //takes the text from the message area and sends it to the interface
     //for processing.  Also takes the message and sends it right
@@ -201,6 +168,18 @@ public class ChatRoomDialog extends JFrame
         entry.setBackground(entryBg);
     }
     
+    //leaveRoom
+    //closes the current chatroom and leaves it
+    public void leaveRoom()
+    {
+    	try {
+			clientIF.leaveRoom(roomName, myName);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     //displayIncomingMsg
     //take the incoming message, and puts it in the main text area
     void displayIncomingMsg(String incomingMsg)
@@ -213,6 +192,31 @@ public class ChatRoomDialog extends JFrame
     void message(String msg) {
         status.setText(msg);
     }
+    
+    public void addUser(String userName)
+    {
+    	boolean alreadyPresent = false;
+    	userIterator = users.iterator();
+    	while(userIterator.hasNext())
+    	{
+    		String user = (String)userIterator.next();
+    		if(user.equals(userName))
+    		{
+    			alreadyPresent = true;
+    		}
+    	}
+    	if(!alreadyPresent)
+    	{
+    		users.add(userName);
+    		userModel.addElement(userName);
+    	}
+    }
+    
+    public void removeUser(String userName)
+	{
+    	userModel.removeElementAt(userModel.indexOf(userName));
+    	users.remove(users.indexOf(userName));
+	}
 
     // DocumentListener methods
     

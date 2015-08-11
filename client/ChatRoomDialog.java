@@ -209,6 +209,7 @@ public class ChatRoomDialog extends JFrame
         /* Send message to server */
         try {
         	//textArea.append(myName + " - " + s + "\n");
+        	System.out.println("****CLIENT  inside send, myName is " + myName + " roomName is "+ roomName + "message is " + s);
         	chatlogModel.addElement(myName + " - " + s + "\n");
 			clientIF.sendMessage(myName + " - " + s + "\n", roomName);
 		} catch (RemoteException e) {
@@ -227,6 +228,7 @@ public class ChatRoomDialog extends JFrame
     public void leaveRoom()
     {
     	try {
+    		System.out.println("****CLIENT  leaving room, roomName is " + roomName + " my name is " + myName);
 			clientIF.leaveRoom(roomName, myName);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -239,6 +241,7 @@ public class ChatRoomDialog extends JFrame
     void displayIncomingMsg(String incomingMsg)
     {
     	//textArea.append(incomingMsg);
+    	System.out.println("****CLIENT  hit displayIncomingMsg, myName is " + myName + " and roomName is " + roomName);
     	chatlogModel.addElement(incomingMsg);
     }
     

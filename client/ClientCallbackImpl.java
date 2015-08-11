@@ -47,7 +47,7 @@ ClientInterface parentIF;
 	//passes the incoming user and room to the client interface for the GUIs
 	public void joinRoomCB(String userName, String roomName)
 	{
-		parentIF.joinLocalRoom(roomName);
+		parentIF.joinLocalRoom(userName, roomName);
 	}
 	
 	//leaveRoomCB

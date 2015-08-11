@@ -297,17 +297,13 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//this function calls the messageCB for all clients in the room, except for the originating client
 	public void message(String incomingMsg, String roomName, String userName) throws RemoteException
 	{
-		System.out.println("****SERVER  incoming message is " + incomingMsg);
-		System.out.println("****SERVER  roomName is " + roomName);
-		System.out.println("****SERVER  userName is " + userName);
-		roomIterator = currentRooms.iterator();
+		System.out.println("****SERVER  inside message, incomingMsg is " + incomingMsg + " roomName is " + roomName + " userName is " + userName);
+		roomIterator = currentRooms.iterator(); 
 		while(roomIterator.hasNext())
 		{
 			ClientRoom cRoom = (ClientRoom)roomIterator.next();
-			System.out.println("****SERVER  going through the list of rooms, current room is " + cRoom.getName());
 			if (cRoom.getName().equals(roomName))
 			{
-				System.out.println("matching room is " + cRoom.getName());
 				List roomClients = cRoom.getUsers();
 				System.out.println(roomClients);
 				if(roomClients != null)
@@ -323,6 +319,7 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 							
 							if((cUser.getName().equals(clientName)) && !(cUser.getName().equals(userName)))
 							{
+								System.out.println("****SERVER  sending doMessageCB with msg to " + incomingMsg + " to user " + cUser.getName() + " to room " + cRoom.getName());
 								cUser.doMessageCB(incomingMsg, cRoom.getName());
 							}
 							else
@@ -354,7 +351,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 				break;
 			}
 		}
-		System.out.println("user exists is " + userExists);
 		if(userExists)
 		{
 			while(roomIterator.hasNext())
@@ -529,7 +525,6 @@ public class ChatroomImpl extends UnicastRemoteObject implements Chatroom
 	//gets all users in a classroom and broadcasts that info out
 	public void requestRoomUsers(String userName, String roomName)
 	{
-		System.out.println("****SERVER  inside requestRoomUsers");
 		ClientUser cUser = null;
 		userIterator = currentClients.iterator();
 		while(userIterator.hasNext())
